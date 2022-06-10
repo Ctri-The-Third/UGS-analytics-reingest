@@ -71,6 +71,21 @@ def _inflate_json(json_d) -> dict:
             value = new_json["eventParams"].pop(key)
             new_json[key] = value
 
+    enriched_keys = [
+        "collectInsertedTimestamp",
+        "msSinceLastEvent",
+        "eventLevel",
+        "gaUserAcquisitionChannel",
+        "gaUserAgeGroup",
+        "gaUserCountry",
+        "gaUserGender",
+        "gaUserStartDate",
+    ]
+
+    for key in enriched_keys:
+        if key in new_json["eventParams"]:
+            new_json["eventParams"].pop(key)
+
     return new_json
 
 
