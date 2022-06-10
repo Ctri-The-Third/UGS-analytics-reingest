@@ -46,7 +46,7 @@ class Ingestor:
 
         try:
             r = requests.post(self.url, json=json_d)
-            self.logger(f"{json_d['userID']} - {r.status_code}")
+            self.logger.info(f"{json_d['userID']} - {r.status_code}")
             if r.status_code != 204:
                 writer.writerow([json_d["userID"]])
             else:
