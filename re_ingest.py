@@ -2,7 +2,7 @@ import configparser
 from genericpath import exists
 import logging
 import csv
-from uuid import uuid1
+from uuid import uuid4
 import requests
 import json
 
@@ -14,7 +14,7 @@ class Ingestor:
     `env_name` is the _name_ of the environment (by default 'production')
     """
 
-    def __init__(self, project_id: str, env_name:str = "production"):
+    def __init__(self, project_id: str, env_name: str = "production"):
 
         self.url = f"https://collect.analytics.unity3d.com/api/analytics/collect/v1/projects/{project_id}/environments/{env_name}"
 
@@ -35,7 +35,7 @@ class Ingestor:
                 json_d = json.loads(row["EVENT_JSON"])
                 if "eventParams" not in json_d:
                     json_d = _inflate_json(json_d)
-                    json_d["event_uuid"] = uuid1()
+                    json_d["eventUUID"] = str(uuid4())
                     self._send_event(json_d)
 
     def _send_event(self, json_d):
@@ -53,7 +53,7 @@ class Ingestor:
                 success_writer.writerow([json_d["userID"]])
         except Exception as err:
             writer.writerow([json_d["userID"]])
-            self.logger.error("ERROR %s - %s", json_d["USERID"], err)
+            self.logger.error("ERROR %s - %s", json_d["userID"], err)
 
 
 def _inflate_json(json_d) -> dict:
@@ -78,7 +78,8 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
 
     cfg_path = "resource/reingest.cfg"
-    config = configparser.ConfigParser(cfg_path)
+    config = configparser.ConfigParser()
+    config.read(filenames=[cfg_path])
 
     ing = Ingestor(config["DEFAULT"]["project_id"], config["DEFAULT"]["environment_id"])
     ing.do_the_thing(config["DEFAULT"]["target_file"])
