@@ -65,6 +65,8 @@ def _inflate_json(json_d) -> dict:
         "sessionID",
         "eventName",
         "eventUUID",
+        "unityInstallationID",
+        "unityPlayerID",
     ]
     for key in keys:
         if key in new_json["eventParams"]:
@@ -80,6 +82,10 @@ def _inflate_json(json_d) -> dict:
         "gaUserCountry",
         "gaUserGender",
         "gaUserStartDate",
+        "eventDate",
+        "eventID",
+        "mainEventID",
+        "timezoneOffset",
     ]
 
     for key in enriched_keys:
